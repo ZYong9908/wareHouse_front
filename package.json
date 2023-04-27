@@ -92,12 +92,6 @@
     "management-system"
   ],
   "license": "MIT",
-  "lint-staged": {
-    "src/**/*.{js,vue}": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ZYong9908/wareHouse_front.git"
