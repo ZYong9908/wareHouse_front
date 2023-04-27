@@ -1,7 +1,7 @@
 <template>
   <div v-if="errorLogs.length>0">
     <el-badge :is-dot="true" style="line-height: 25px;margin-top: -5px;" @click.native="dialogTableVisible=true">
-      <el-button style="padding: 8px 10px;" size="small" type="danger">
+      <el-button style="padding: 8px 10px;" size="small" type="warning">
         <svg-icon icon-class="bug" />
       </el-button>
     </el-badge>
@@ -16,14 +16,14 @@
           <template slot-scope="{row}">
             <div>
               <span class="message-title">Msg:</span>
-              <el-tag type="danger">
+              <el-tag type="warning">
                 {{ row.err.message }}
               </el-tag>
             </div>
             <br>
             <div>
               <span class="message-title" style="padding-right: 10px;">Info: </span>
-              <el-tag type="warning">
+              <el-tag type="danger">
                 {{ row.vm.$vnode.tag }} error in {{ row.info }}
               </el-tag>
             </div>

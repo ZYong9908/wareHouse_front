@@ -65,3 +65,41 @@ export function addCategory(data) {
     data,
   })
 }
+
+export function getAllSupplier() {
+  return request({
+    url: '/product/supplier',
+    method: 'get',
+  })
+}
+export function deleteCategory(data) {
+  return request({
+    url: '/product/category',
+    method: 'delete',
+    data,
+  })
+}
+// addSupplier
+export function addSupplier(data) {
+  return request({
+    url: '/product/supplier',
+    method: 'post',
+    data,
+  })
+}
+// deleteSupplier
+export function deleteSupplier(data) {
+  return request({
+    url: '/product/supplier',
+    method: 'delete',
+    data,
+  })
+}
+///product/audit
+export function auditRecord(data) {
+  return request({
+    url: '/product/audit',
+    method: 'post',
+    data,
+  })
+}
