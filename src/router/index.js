@@ -6,38 +6,6 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-/* Router Modules */
-/*import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'*/
-
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
 export const constantRoutes = [
   {
     path: '/redirect',
@@ -55,11 +23,6 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true,
   },
-  /*  {
-      path: '/auth-redirect',
-      component: () => import('@/views/login/auth-redirect'),
-      hidden: true,
-    },*/
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),
@@ -79,7 +42,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: {title: '首页', icon: 'dashboard', affix: true},
+        meta: {title: '首页', icon: 'el-icon-s-home', affix: true},
       },
     ],
   },
@@ -90,7 +53,7 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
-  /*  {
+    {
       path: '/icon',
       component: Layout,
       children: [
@@ -101,7 +64,7 @@ export const asyncRoutes = [
           meta: {title: 'Icons', icon: 'icon', noCache: true},
         },
       ],
-    },*/
+    },
   {
     path: '/user',
     component: Layout,
@@ -123,10 +86,10 @@ export const asyncRoutes = [
   {
     path: '/product',
     component: Layout,
+    redirect: '/index',
     meta: {
       title: '仓库管理',
       icon: 'el-icon-s-order',
-      roles: ['admin'],
     },
     children: [
       {
@@ -145,7 +108,7 @@ export const asyncRoutes = [
         name: 'CategoryList',
         meta: {
           title: '分类管理',
-          icon: 'list',
+          icon: 'tree',
           noCache: true,
         },
       },
@@ -155,7 +118,7 @@ export const asyncRoutes = [
         name: 'SupplierList',
         meta: {
           title: '供应商管理',
-          icon: 'list',
+          icon: 'shopping',
           noCache: true,
         },
       },
@@ -164,9 +127,10 @@ export const asyncRoutes = [
   {
     path: '/operate',
     component: Layout,
+    redirect: '/list',
     meta: {
       title: '出入库',
-      icon: 'el-icon-s-order',
+      icon: 'el-icon-sort',
     },
     children: [
       {
@@ -186,7 +150,7 @@ export const asyncRoutes = [
         name: 'OperateAudit',
         meta: {
           title: '出入库审核',
-          icon: 'list',
+          icon: 'el-icon-finished',
           noCache: true,
           roles: ['admin'],
         },
@@ -197,7 +161,7 @@ export const asyncRoutes = [
         name: 'RuKu',
         meta: {
           title: '入库',
-          icon: 'list',
+          icon: 'el-icon-circle-plus-outline',
           noCache: true,
         },
       },
@@ -207,7 +171,7 @@ export const asyncRoutes = [
         name: 'ChuKu',
         meta: {
           title: '出库',
-          icon: 'list',
+          icon: 'el-icon-remove-outline',
           noCache: true,
         },
       },

@@ -4,9 +4,9 @@
   <el-table :data="categoryList" style="width: 100%">
     <el-table-column prop="id" label="Id" ></el-table-column>
     <el-table-column prop="name" label="名称"></el-table-column>
-    <el-table-column label="操作">
+    <el-table-column label="操作" v-if="checkPermission(['admin'])">
       <template v-slot="scope">
-        <el-popconfirm v-permission="['admin']" title="确认删除这个分类？" @onConfirm="remove(scope.row,scope.$index)">
+        <el-popconfirm  title="确认删除这个分类？" @onConfirm="remove(scope.row,scope.$index)">
           <template #reference>
             <el-button type="danger" size="small">删除</el-button>
           </template>
