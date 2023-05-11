@@ -65,6 +65,7 @@
 
 <script>
 import {getAllSupplier, getCategoryList, getProductList, operateProduct} from '@/api/product'
+import checkPermission from '@/utils/permission'
 
 export default {
   name: 'chuku',
@@ -142,16 +143,18 @@ export default {
           operateProduct(data).then(res => {
             if (res.status === 1) {
               this.$message.success((this.operateType === 0 ? '出库' : '入库') + '成功')
-              if (data.id === this.tableData[this.operateDialogData.index].id) {
-                let count = Number(this.tableData[this.operateDialogData.index].count)
-                if (this.operateType === 0) {
-                  this.tableData[this.operateDialogData.index].count = count - Number(this.operateDialogData.count)
-                } else {
-                  this.tableData[this.operateDialogData.index].count = count + Number(this.operateDialogData.count)
-                }
-                this.operateDialogVisible = false
-                this.tableData = [...this.tableData]
-              } else this.getProductList()
+              if (checkPermission(['admin'])) {
+                if (data.id === this.tableData[this.operateDialogData.index].id) {
+                  let count = Number(this.tableData[this.operateDialogData.index].count)
+                  if (this.operateType === 0) {
+                    this.tableData[this.operateDialogData.index].count = count - Number(this.operateDialogData.count)
+                  } else {
+                    this.tableData[this.operateDialogData.index].count = count + Number(this.operateDialogData.count)
+                  }
+                  this.tableData = [...this.tableData]
+                } else this.getProductList()
+              }
+              this.operateDialogVisible = false
             } else {
               this.$message.error(res.message)
             }

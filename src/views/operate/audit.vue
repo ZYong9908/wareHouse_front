@@ -64,7 +64,7 @@ export default {
             row.audit = '不通过'
           }
         } else {
-          this.$message.error('审核失败')
+          this.$message.error(res.message)
         }
       })
     },
