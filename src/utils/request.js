@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import {Message} from 'element-ui'
 import store from '@/store'
-import { getToken } from '@/utils/auth'
+import {getToken} from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -16,7 +16,6 @@ service.interceptors.request.use(
       if (config.method === 'get') {
         const queryParameters = config.params;
         let filteredParameters = {};
-
         for (let key in queryParameters) {
           const value = queryParameters[key];
           if (value !== null && value !== undefined && value !== "") {
@@ -30,7 +29,6 @@ service.interceptors.request.use(
       if (config.method === 'post' && config.headers["Content-Type"] === "multipart/form-data") {
         const formData = config.data;
         let filteredData = new FormData();
-
         for (let entry of formData.entries()) {
           const key = entry[0];
           const value = entry[1];
@@ -55,8 +53,7 @@ service.interceptors.request.use(
 // response interceptor
 service.interceptors.response.use(
     response => {
-      const res = response.data
-      return res
+      return response.data
     },
     error => {
       console.log('err' + error) // for debug

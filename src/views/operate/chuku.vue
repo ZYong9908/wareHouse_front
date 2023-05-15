@@ -34,7 +34,11 @@
         </template>
       </el-table-column>
       <el-table-column label="库存数量" prop="count" width="200"></el-table-column>
-      <el-table-column label="最后操作时间" prop="update_time" width="200"></el-table-column>
+      <el-table-column label="最后操作时间" prop="update_time" width="200">
+        <template v-slot="scope">
+          {{ scope.row.update_time | formatTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template v-slot="scope">
           <el-button size="small" style="margin-right: 10px" type="warning" @click="openOperateDialog(scope.row,scope.$index,0)">出库</el-button>
@@ -88,9 +92,9 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
-      currentPage:1,
-      pageSize:10,
-      total:0
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   mounted() {

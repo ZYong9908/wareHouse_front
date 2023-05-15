@@ -48,7 +48,11 @@
       <el-table :data="detailData" border height="500px" stripe>
         <el-table-column label="变动数量" prop="count"></el-table-column>
         <el-table-column :formatter="formatOperate" label="操作类型" prop="operate"></el-table-column>
-        <el-table-column label="操作时间" prop="create_time"></el-table-column>
+        <el-table-column label="操作时间" prop="create_time">
+          <template v-slot="scope">
+            {{ scope.row.create_time | formatTime }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作人" prop="user"></el-table-column>
         <el-table-column label="审核状态" prop="audit"></el-table-column>
       </el-table>
@@ -79,9 +83,9 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
-      listCurrentPage:1,
-      pageSize:10,
-      total:0
+      listCurrentPage: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   mounted() {

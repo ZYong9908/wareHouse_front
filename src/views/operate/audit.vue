@@ -2,7 +2,7 @@
   <div style="margin: 5px">
     <el-form :inline="true" size="small">
       <el-form-item label="审核状态">
-        <el-select v-model="auditTypeSelect" placeholder="请选择" clearable>
+        <el-select v-model="auditTypeSelect" clearable placeholder="请选择">
           <el-option v-for="role in auditTypeList" :key="role.id" :label="role.name" :value="role.id"></el-option>
         </el-select>
       </el-form-item>
@@ -11,17 +11,21 @@
       </el-form-item>
     </el-form>
     <el-table :data="auditList" style="width: 100%">
-      <el-table-column prop="id" label="ID"></el-table-column>
-      <el-table-column prop="product" label="产品名称"></el-table-column>
-      <el-table-column prop="count" label="数量"></el-table-column>
-      <el-table-column prop="operate" label="操作类型" :formatter="formatOperate"></el-table-column>
-      <el-table-column prop="user" label="用户"></el-table-column>
-      <el-table-column prop="create_time" label="创建时间"></el-table-column>
-      <el-table-column prop="audit" label="审核状态"></el-table-column>
+      <el-table-column label="ID" prop="id"></el-table-column>
+      <el-table-column label="产品名称" prop="product"></el-table-column>
+      <el-table-column label="数量" prop="count"></el-table-column>
+      <el-table-column :formatter="formatOperate" label="操作类型" prop="operate"></el-table-column>
+      <el-table-column label="用户" prop="user"></el-table-column>
+      <el-table-column label="创建时间" prop="create_time">
+        <template v-slot="scope">
+          {{ scope.row.create_time | formatTime }}
+        </template>
+      </el-table-column>
+      <el-table-column label="审核状态" prop="audit"></el-table-column>
       <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button type="primary" size="mini" :disabled="scope.row.audit === '通过'" @click="auditRecord(scope.row,1)">通过</el-button>
-          <el-button type="danger" size="mini" :disabled="scope.row.audit === '不通过'" @click="auditRecord(scope.row,2)">不通过</el-button>
+          <el-button :disabled="scope.row.audit === '通过'" size="mini" type="primary" @click="auditRecord(scope.row,1)">通过</el-button>
+          <el-button :disabled="scope.row.audit === '不通过'" size="mini" type="danger" @click="auditRecord(scope.row,2)">不通过</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -34,7 +38,7 @@
 </template>
 
 <script>
-import {getProductRecords, auditRecord} from '@/api/product'
+import {auditRecord, getProductRecords} from '@/api/product'
 
 export default {
   name: 'audit',
@@ -47,9 +51,9 @@ export default {
         {id: 2, name: '不通过'},
       ],
       auditList: [],
-      currentPage:1,
-      pageSize:10,
-      total:0
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   mounted() {

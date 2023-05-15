@@ -34,7 +34,11 @@
         </template>
       </el-table-column>
       <el-table-column label="库存数量" prop="count" width="200"></el-table-column>
-      <el-table-column label="最后操作时间" prop="update_time" width="200"></el-table-column>
+      <el-table-column label="最后操作时间" prop="update_time" width="200">
+        <template v-slot="scope">
+          {{ scope.row.update_time | formatTime }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template v-slot="scope">
           <el-button size="small" type="success" @click="openOperateDialog(scope.row,scope.$index,1)">入库</el-button>
@@ -70,7 +74,6 @@
 <script>
 import {getAllSupplier, getCategoryList, getProductList, operateProduct} from '@/api/product'
 import checkPermission from '@/utils/permission'
-
 export default {
   name: 'ruku',
   data() {

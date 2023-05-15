@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import moment from 'moment'
 import {updateUser, delUser} from '@/api/user'
+import {formatTime} from '@/utils'
 
 export default {
   name: 'userList',
@@ -70,10 +70,10 @@ export default {
   },
   computed: {
     create_time() {
-      return this.formatTime(this.form.create_time)
+      return formatTime(this.form.create_time)
     },
     update_time() {
-      return this.formatTime(this.form.update_time)
+      return formatTime(this.form.update_time)
     },
   },
   data() {
@@ -118,9 +118,6 @@ export default {
           this.$message.error(res.message)
         }
       })
-    },
-    formatTime(time) {
-      return moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
     validateForm() {
       // 处理密码相关的校验规则

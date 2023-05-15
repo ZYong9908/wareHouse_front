@@ -35,7 +35,11 @@
         </template>
       </el-table-column>
       <el-table-column label="库存数量" prop="count" width="200"></el-table-column>
-      <el-table-column label="最后操作时间" prop="update_time" width="200"></el-table-column>
+      <el-table-column label="最后操作时间" prop="update_time" width="200">
+        <template v-slot="scope">
+          {{ scope.row.update_time|formatTime }}
+        </template>
+      </el-table-column>
       <el-table-column v-if="checkPermission(['admin'])" label="操作">
         <template v-slot="scope">
           <el-button v-permission="['admin']" size="small" style="margin-right: 10px" type="primary" @click="edit(scope.row,scope.$index)">编辑</el-button>
@@ -107,9 +111,9 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
-      currentPage:1,
-      pageSize:10,
-      total:0
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   mounted() {

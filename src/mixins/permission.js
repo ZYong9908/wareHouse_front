@@ -1,5 +1,4 @@
 import checkPermission from '@/utils/permission';
-
 export default {
   methods: {
     checkPermission(roles) {
