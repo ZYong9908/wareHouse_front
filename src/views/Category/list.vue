@@ -1,32 +1,37 @@
 <template>
-<div style="margin: 5px">
-  <el-button v-permission="['admin']" type="primary" @click="addCategoryDialog">添加分类</el-button>
-  <el-table :data="categoryList" style="width: 100%">
-    <el-table-column prop="id" label="Id" ></el-table-column>
-    <el-table-column prop="name" label="名称"></el-table-column>
-    <el-table-column label="操作" v-if="checkPermission(['admin'])">
-      <template v-slot="scope">
-        <el-popconfirm  title="确认删除这个分类？" @onConfirm="remove(scope.row,scope.$index)">
-          <template #reference>
-            <el-button type="danger" size="small">删除</el-button>
-          </template>
-        </el-popconfirm>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-dialog title="添加分类" :visible.sync="addCategoryVisible" :modal="false" :close-on-click-modal="false" :close-on-press-escape="false"
-             width="30%">
-    <el-form>
-      <el-form-item label="分类名称">
-        <el-input v-model="addCategoryName"></el-input>
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="addCategoryVisible = false">取消</el-button>
-      <el-button type="primary" @click="addCategory()">确认</el-button>
+  <div style="margin: 5px">
+    <el-button v-permission="['admin']" type="primary" @click="addCategoryDialog">添加分类</el-button>
+    <el-table :data="categoryList" style="width: 100%">
+      <el-table-column label="Id" prop="id"></el-table-column>
+      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column v-if="checkPermission(['admin'])" label="操作">
+        <template v-slot="scope">
+          <el-popconfirm title="确认删除这个分类？" @onConfirm="remove(scope.row,scope.$index)">
+            <template #reference>
+              <el-button size="small" type="danger">删除</el-button>
+            </template>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
     </div>
-  </el-dialog>
-</div>
+    <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" :modal="false" :visible.sync="addCategoryVisible" title="添加分类"
+               width="30%">
+      <el-form>
+        <el-form-item label="分类名称">
+          <el-input v-model="addCategoryName"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addCategoryVisible = false">取消</el-button>
+        <el-button type="primary" @click="addCategory()">确认</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -41,12 +46,23 @@ export default {
       addCategoryVisible: false,
       addCategoryName: '',
       categoryList: [],
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
     }
   },
   mounted() {
     this.getCategoryList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getCategoryList()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getCategoryList()
+    },
     remove(row, index) {
       deleteCategory({id: row.id}).then(res => {
         if (res.status === 1) {
@@ -58,9 +74,10 @@ export default {
       })
     },
     getCategoryList() {
-      getCategoryList().then(res => {
+      getCategoryList({page: this.currentPage, page_size: this.pageSize}).then(res => {
         if (res.status === 1) {
           this.categoryList = [...res.category]
+          this.total = res.total
         } else {
           this.$message.error('获取失败')
         }
@@ -90,7 +107,7 @@ export default {
       this.addCategoryName = ''
       this.addCategoryVisible = true
     },
-  }
+  },
 }
 </script>
 

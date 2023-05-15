@@ -24,9 +24,12 @@
           <el-button type="danger" size="mini" :disabled="scope.row.audit === '不通过'" @click="auditRecord(scope.row,2)">不通过</el-button>
         </template>
       </el-table-column>
-
     </el-table>
-
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -44,12 +47,23 @@ export default {
         {id: 2, name: '不通过'},
       ],
       auditList: [],
+      currentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
     this.getAuditList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getProductList()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getProductList()
+    },
     auditRecord(row, audit) {
       let data = {
         id: row.id,
@@ -72,9 +86,10 @@ export default {
       return row.operate === 0 ? '出库' : '入库'
     },
     getAuditList() {
-      getProductRecords({audit: this.auditTypeSelect}).then(res => {
+      getProductRecords({audit: this.auditTypeSelect, page: this.currentPage, limit: this.pageSize}).then(res => {
         if (res.status === 1) {
           this.auditList = [...res.records]
+          this.total = res.total
         } else {
           this.$message.error('获取失败')
         }

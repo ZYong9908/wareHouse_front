@@ -2,6 +2,11 @@
   <div style="padding: 5px">
     <params @search="search" :roles="roles"/>
     <user-list :userList="userList" :roles="roles" @editUser="editUser" @delUser="delUser"/>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -21,6 +26,9 @@ export default {
       userList: [],
       filters: {},
       roles: [],
+      currentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
@@ -28,6 +36,14 @@ export default {
     this.getRoleList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getAllUser()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getAllUser()
+    },
     delUser(id, index) {
       this.userList[index].id === id ? this.userList.splice(index, 1) : this.getAllUser()
     },
@@ -47,9 +63,15 @@ export default {
       })
     },
     getAllUser() {
-      getAllUser(this.filters).then(res => {
+      let params={
+        ...this.filters,
+        page:this.currentPage,
+        page_size:this.pageSize
+      }
+      getAllUser(params).then(res => {
         if (res.status === 1) {
           this.userList = res.users
+          this.total = res.total
         }
       })
     },

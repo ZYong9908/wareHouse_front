@@ -41,6 +41,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
     <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" :modal="false" :title="operateType===0?'出库':'入库'"
                :visible.sync="operateDialogVisible" width="30%">
       <el-form ref="formoperate" :model="operateDialogData" :rules="rules">
@@ -54,7 +59,6 @@
           <el-input v-model="operateDialogData.count" type="number"></el-input>
         </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="operateDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="operateCount()">确认</el-button>
@@ -84,14 +88,25 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
+      currentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
     this.getCategoryList()
-    this.getProductList()
     this.getAllSupplier()
+    this.getProductList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getProductList()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getProductList()
+    },
     getAllSupplier() {
       getAllSupplier().then(res => {
         if (res.status === 1) {
@@ -166,9 +181,11 @@ export default {
       let params = this.name ? {name: this.name} : {}
       params = (this.categorySelect || this.categorySelect === 0) ? {...params, category: this.categorySelect} : params
       params = (this.supplierSelect || this.supplierSelect === 0) ? {...params, supplier: this.supplierSelect} : params
+      params = {...params, page: this.currentPage, page_size: this.pageSize}
       getProductList(params).then(res => {
         if (res.status === 1) {
           this.tableData = res.product
+          this.total = res.total
         } else {
           this.$message.error(res.message)
         }

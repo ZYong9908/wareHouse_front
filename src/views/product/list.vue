@@ -39,7 +39,7 @@
       <el-table-column v-if="checkPermission(['admin'])" label="操作">
         <template v-slot="scope">
           <el-button v-permission="['admin']" size="small" style="margin-right: 10px" type="primary" @click="edit(scope.row,scope.$index)">编辑</el-button>
-          <el-popconfirm title="确认删除这个产品？" @onConfirm="remove(scope.row,scope.$index)" >
+          <el-popconfirm title="确认删除这个产品？" @onConfirm="remove(scope.row,scope.$index)">
             <template #reference>
               <el-button size="small" type="danger">删除</el-button>
             </template>
@@ -47,6 +47,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
     <el-dialog :close-on-click-modal="false" :close-on-press-escape="false" :modal="false" :title="(addDialogType?'编辑':'添加')+'产品'"
                :visible.sync="addDialogVisible" width="30%">
       <el-form ref="formadd" :model="form" :rules="rules">
@@ -77,7 +82,8 @@
 
 <script>
 import permission from '@/directive/permission/index.js'
-import {addCategory, addProduct, deleteProduct, getAllSupplier, getCategoryList, getProductList, getProductRecords, operateProduct, updateProduct} from '@/api/product'
+import {addProduct, deleteProduct, getAllSupplier, getCategoryList, getProductList, updateProduct} from '@/api/product'
+
 export default {
   name: 'list',
   directives: {permission},
@@ -101,14 +107,25 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
+      currentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
     this.getCategoryList()
-    this.getProductList()
     this.getAllSupplier()
+    this.getProductList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getProductList()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getProductList()
+    },
     getAllSupplier() {
       getAllSupplier().then(res => {
         if (res.status === 1) {
@@ -208,9 +225,11 @@ export default {
       let params = this.name ? {name: this.name} : {}
       params = (this.categorySelect || this.categorySelect === 0) ? {...params, category: this.categorySelect} : params
       params = (this.supplierSelect || this.supplierSelect === 0) ? {...params, supplier: this.supplierSelect} : params
+      params = {...params, page: this.currentPage, page_size: this.pageSize}
       getProductList(params).then(res => {
         if (res.status === 1) {
           this.tableData = res.product
+          this.total = res.total
         } else {
           this.$message.error(res.message)
         }

@@ -14,6 +14,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
     <el-dialog title="添加供应商" :visible.sync="addSupplierVisible" :modal="false" :close-on-click-modal="false" :close-on-press-escape="false"
                width="30%">
       <el-form>
@@ -41,12 +46,23 @@ export default {
       addSupplierVisible: false,
       addSupplierName: '',
       supplierList: [],
+      currentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
     this.getAllSupplier()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getAllSupplier()
+    },
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getAllSupplier()
+    },
     remove(row, index) {
       deleteSupplier({id: row.id}).then(res => {
         if (res.status === 1) {
@@ -58,9 +74,10 @@ export default {
       })
     },
     getAllSupplier() {
-      getAllSupplier().then(res => {
+      getAllSupplier({page:this.currentPage,size:this.pageSize}).then(res => {
         if (res.status === 1) {
           this.supplierList = [...res.supplier]
+          this.total = res.supplier.length
         } else {
           this.$message.error('获取失败')
         }

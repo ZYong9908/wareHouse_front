@@ -39,6 +39,11 @@
         </template>
       </el-table-column>
     </el-table>
+    <div style="position: absolute;right: 20px">
+      <el-pagination :current-page="listCurrentPage" :page-size="pageSize" :page-sizes="[10, 20, 50, 100]" :total="total" background
+                     layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange">
+      </el-pagination>
+    </div>
     <el-dialog :closable="true" :close-on-click-modal="true" :visible.sync="detailDialogVisible" title="库存详情" width="45%">
       <el-table :data="detailData" border height="500px" stripe>
         <el-table-column label="变动数量" prop="count"></el-table-column>
@@ -74,14 +79,25 @@ export default {
       categorySelect: '',
       supplierList: [],
       supplierSelect: '',
+      listCurrentPage:1,
+      pageSize:10,
+      total:0
     }
   },
   mounted() {
     this.getCategoryList()
-    this.getProductList()
     this.getAllSupplier()
+    this.getProductList()
   },
   methods: {
+    handleSizeChange(val) {
+      this.pageSize = val
+      this.getProductList()
+    },
+    handleCurrentChange(val) {
+      this.listCurrentPage = val
+      this.getProductList()
+    },
     getAllSupplier() {
       getAllSupplier().then(res => {
         if (res.status === 1) {
@@ -140,9 +156,11 @@ export default {
       let params = this.name ? {name: this.name} : {}
       params = (this.categorySelect || this.categorySelect === 0) ? {...params, category: this.categorySelect} : params
       params = (this.supplierSelect || this.supplierSelect === 0) ? {...params, supplier: this.supplierSelect} : params
+      params = {...params, page: this.listCurrentPage, page_size: this.pageSize}
       getProductList(params).then(res => {
         if (res.status === 1) {
           this.tableData = res.product
+          this.total = res.total
         } else {
           this.$message.error(res.message)
         }

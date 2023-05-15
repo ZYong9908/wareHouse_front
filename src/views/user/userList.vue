@@ -8,7 +8,7 @@
         <template v-slot="scope">
           <el-button type="primary" @click="edit(scope.row,scope.$index)">编辑</el-button>
           <el-popconfirm title="确认删除这个用户吗？" style="margin-left: 5px" @onConfirm="delConfirm(scope.row,scope.$index)">
-            <el-button slot="reference">删除</el-button>
+            <el-button v-slot="reference">删除</el-button>
           </el-popconfirm>
         </template>
       </el-table-column>
@@ -123,7 +123,6 @@ export default {
       return moment(time).format('YYYY-MM-DD HH:mm:ss')
     },
     validateForm() {
-      const _this = this
       // 处理密码相关的校验规则
       const passwordRules = []
       if (this.password.trim() !== '' || this.repassword.trim() !== '') {
@@ -169,7 +168,6 @@ export default {
       this.form = {...row}
       this.form.role = row.role.id
       this.form.index = index
-      console.log('this.form', this.form)
       this.dialogVisible = true
     },
   },
